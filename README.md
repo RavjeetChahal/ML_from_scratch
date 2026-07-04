@@ -35,7 +35,11 @@ experiments/
     └── breast_cancer_experiment.py
 ```
 ### Setup
+```bash
 pip install -e .
+```
 
 ### Run Experiment
+```bash
 python experiments/logistic_regression/breast_cancer_experiment.py
+```
