@@ -27,7 +27,7 @@ class LogisticRegressionScratch:
             loss = self._compute_loss(y, p)
             self.losses.append(loss)
             if i > 0:
-                loss_change = self.losses[i - 1] - loss
+                loss_change = np.abs(self.losses[i - 1] - loss)
                 if loss_change < self.tolerance:
                     break
 
