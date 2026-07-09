@@ -40,39 +40,40 @@ y_pred_scratch = scratch_model.predict(X_test_scaled)
 width = 38
 
 print("\n" + "=" * 90)
-print("Scratch Metrics".center(90))
+print("Regression Metrics Using Scratch Metric Functions".center(90))
 print("=" * 90)
 
-print(f"{'Scratch Logistic Regression':<{width}} | {'Sklearn Logistic Regression':<{width}}")
+print(f"{'Scratch Linear Regression':<{width}} | {'Sklearn Linear Regression':<{width}}")
 print("-" * 90)
 
-print(f"{'Accuracy:':<12} {scratch_mean_squared_error(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'Accuracy:':<12} {scratch_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'MSE:':<12} {scratch_mean_squared_error(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'MSE:':<12} {scratch_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}.6f}")
 
-print(f"{'Precision:':<12} {scratch_root_mean_squared_error(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'Precision:':<12} {scratch_root_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'RMSE:':<12} {scratch_root_mean_squared_error(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'RMSE:':<12} {scratch_root_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}.6f}")
 
-print(f"{'Recall:':<12} {scratch_mean_absolute_error(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'Recall:':<12} {scratch_mean_absolute_error(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'MAE:':<12} {scratch_mean_absolute_error(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'MAE:':<12} {scratch_mean_absolute_error(y_test, y_pred_sklearn):<{width - 12}.6f}")
 
-print(f"{'F1:':<12} {scratch_r2_score(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'F1:':<12} {scratch_r2_score(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'R²:':<12} {scratch_r2_score(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'R²:':<12} {scratch_r2_score(y_test, y_pred_sklearn):<{width - 12}.6f}")
+
 
 print("\n" + "=" * 90)
-print("Scikit-Learn Metrics".center(90))
+print("Regression Metrics Using Scikit-Learn Metric Functions".center(90))
 print("=" * 90)
 
-print(f"{'Scratch Logistic Regression':<{width}} | {'Sklearn Logistic Regression':<{width}}")
+print(f"{'Scratch Linear Regression':<{width}} | {'Sklearn Linear Regression':<{width}}")
 print("-" * 90)
 
-print(f"{'Accuracy:':<12} {sklearn_mean_squared_error(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'Accuracy:':<12} {sklearn_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'MSE:':<12} {sklearn_mean_squared_error(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'MSE:':<12} {sklearn_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}.6f}")
 
-print(f"{'Precision:':<12} {sklearn_root_mean_squared_error(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'Precision:':<12} {sklearn_root_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'RMSE:':<12} {sklearn_root_mean_squared_error(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'RMSE:':<12} {sklearn_root_mean_squared_error(y_test, y_pred_sklearn):<{width - 12}.6f}")
 
-print(f"{'Recall:':<12} {sklearn_mean_absolute_error(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'Recall:':<12} {sklearn_mean_absolute_error(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'MAE:':<12} {sklearn_mean_absolute_error(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'MAE:':<12} {sklearn_mean_absolute_error(y_test, y_pred_sklearn):<{width - 12}.6f}")
 
-print(f"{'F1:':<12} {sklearn_r2_score(y_test, y_pred_scratch):<{width - 12}} | "
-      f"{'F1:':<12} {sklearn_r2_score(y_test, y_pred_sklearn):<{width - 12}}")
+print(f"{'R²:':<12} {sklearn_r2_score(y_test, y_pred_scratch):<{width - 12}.6f} | "
+      f"{'R²:':<12} {sklearn_r2_score(y_test, y_pred_sklearn):<{width - 12}.6f}")
