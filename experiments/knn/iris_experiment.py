@@ -42,6 +42,7 @@ print("\nScratch KNN")
 print("-" * 70)
 print(f"Accuracy: {scratch_accuracy_score(y_test, y_pred_scratch):.4f}")
 print("Confusion Matrix:")
+
 print(scratch_confusion_matrix(y_test, y_pred_scratch))
 
 print("\nScikit-Learn KNN")
