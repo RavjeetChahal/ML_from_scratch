@@ -87,7 +87,7 @@ experiments/
 │   └── california_housing_experiment.py
 └── knn/
     ├── iris_experiment.py
-    └── california_housing_knn_experiment.py
+    └── california_housing_experiment.py
 ```
 
 ## Setup
@@ -106,7 +106,7 @@ Run an experiment from the repository root:
 python experiments/logistic_regression/breast_cancer_experiment.py
 python experiments/linear_regression/california_housing_experiment.py
 python experiments/knn/iris_experiment.py
-python experiments/knn/california_housing_knn_experiment.py
+python experiments/knn/california_housing_experiment.py
 ```
 
 Each experiment compares the from-scratch implementation with the equivalent scikit-learn model.
