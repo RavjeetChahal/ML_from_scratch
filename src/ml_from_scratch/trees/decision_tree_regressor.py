@@ -155,18 +155,3 @@ class DecisionTreeRegressorScratch:
             return self._traverse_tree(x, node.left)
 
         return self._traverse_tree(x, node.right)
-
-
-X = np.array([
-    [1],
-    [2],
-    [7],
-    [8],
-])
-
-y = np.array([2.0, 4.0, 10.0, 12.0])
-
-model = DecisionTreeRegressorScratch(min_samples_leaf=2)
-model.fit(X, y)
-
-print(model.predict(X))
