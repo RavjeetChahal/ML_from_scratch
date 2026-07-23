@@ -11,13 +11,14 @@ class Node:
     def is_leaf(self):
         return self.value is not None
     
-class DecisionTreeClassifierScratch:
+class DecisionTreeRegressorScratch:
     def __init__(self, max_depth=None, min_samples_split=2, min_samples_leaf=1):
         self.root = None
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.min_samples_leaf = min_samples_leaf
         self.n_features = None
+
 
     def fit(self, X, y):
         X = np.asarray(X)
@@ -28,14 +29,12 @@ class DecisionTreeClassifierScratch:
 
         if X.shape[0] != y.shape[0]:
             raise ValueError("X and y must contain the same number of samples.")
-        
 
         _, n_features = X.shape
         self.n_features = n_features
 
         self.root = self._build_tree(X, y, 0)
         return self
-
 
     def predict(self, X):
         if self.root is None:
@@ -57,25 +56,30 @@ class DecisionTreeClassifierScratch:
 
         return np.asarray(predictions)
 
-    def _gini(self, y):
-        _, counts = np.unique(y, return_counts=True)
-        sum_squared_proportions = np.sum(np.square(counts/(np.sum(counts))))
-        return 1 - sum_squared_proportions
+    def _mse(self, y):
+        if len(y) == 0:
+            raise ValueError("Labels cannot be empty!")
+        mean = np.mean(y)
+        squared_errors = np.square(y - mean)
+        return np.sum(squared_errors) / len(y)
 
+    def _weighted_mse(self, y_left, y_right):
+        num_left = len(y_left)
+        num_right = len(y_right)
+        total = num_left + num_right
 
-    def _weighted_impurity(self, y_left, y_right):
-        num_l = len(y_left)
-        num_r = len(y_right)
-        total = num_l + num_r
-        gini_l = self._gini(y_left)
-        gini_r = self._gini(y_right)
-        return ((num_l / total) * gini_l) + ((num_r / total) * gini_r)
-    
-    def _information_gain(self, y, y_left, y_right):
-        gini_parent = self._gini(y)
-        gini_after = self._weighted_impurity(y_left, y_right)
-        return gini_parent - gini_after
-    
+        mse_left = self._mse(y_left)
+        mse_right = self._mse(y_right)
+
+        return (num_left / total) * mse_left + (num_right / total) * mse_right
+
+    def _mse_reduction(self, y, y_left, y_right):
+        parent_mse = self._mse(y)
+        child_mse = self._weighted_mse(y_left, y_right)
+        return parent_mse - child_mse
+
+    def _leaf_value(self, y):
+        return np.mean(y)
 
     def _split(self, X_column, threshold):
         cond = X_column <= threshold
@@ -90,9 +94,9 @@ class DecisionTreeClassifierScratch:
             thresholds.append(np.mean([X_column[i], X_column[i + 1]]))
 
         return np.asarray(thresholds)
-    
+
     def _best_split(self, X, y):
-        best_ig = 0
+        best_mse_reduction = 0
         best_feature_index = -1
         best_threshold = None
         best_left_indices = []
@@ -107,24 +111,25 @@ class DecisionTreeClassifierScratch:
                     continue
                 y_left = y[left_indices]
                 y_right = y[right_indices]
-                ig = self._information_gain(y, y_left, y_right)
-                if ig > best_ig:
-                    best_ig = ig
+                mse_reduction = self._mse_reduction(y, y_left, y_right)
+                if mse_reduction > best_mse_reduction:
+                    best_mse_reduction = mse_reduction
                     best_feature_index = feature_index
                     best_threshold = threshold
                     best_left_indices = left_indices
                     best_right_indices = right_indices
+        
 
-        return (best_ig, best_feature_index, best_threshold, best_left_indices, best_right_indices)
-    
-    def _leaf_value(self, y):
-        labels, counts = np.unique(y, return_counts=True)
-        idx = np.argmax(counts)
-        majority = labels[idx]
-        return majority
-    
+        return (
+            best_mse_reduction,
+            best_feature_index,
+            best_threshold,
+            best_left_indices,
+            best_right_indices,
+        )
+
     def _build_tree(self, X, y, depth):
-        if len(np.unique(y)) == 1:
+        if self._mse(y) == 0:
             return Node(value=self._leaf_value(y))
         if len(y) < self.min_samples_split:
             return Node(value=self._leaf_value(y))
@@ -141,12 +146,27 @@ class DecisionTreeClassifierScratch:
         right_tree = self._build_tree(X[right_indices], y[right_indices], depth + 1)
         
         return Node(feature_index=feature_index, threshold=threshold, left=left_tree, right=right_tree)
-    
+
     def _traverse_tree(self, x, node):
         if node.is_leaf():
             return node.value
-        
+
         if x[node.feature_index] <= node.threshold:
             return self._traverse_tree(x, node.left)
-        else:
-            return self._traverse_tree(x, node.right)
+
+        return self._traverse_tree(x, node.right)
+
+
+X = np.array([
+    [1],
+    [2],
+    [7],
+    [8],
+])
+
+y = np.array([2.0, 4.0, 10.0, 12.0])
+
+model = DecisionTreeRegressorScratch(min_samples_leaf=2)
+model.fit(X, y)
+
+print(model.predict(X))

@@ -4,8 +4,7 @@ from sklearn.metrics import (
     confusion_matrix as sklearn_confusion_matrix,
 )
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
 
 from ml_from_scratch.utils.utils import (
     print_classification_prediction_comparison,
@@ -19,8 +18,8 @@ from ml_from_scratch.metrics.classification import (
     accuracy_score as scratch_accuracy_score,
     confusion_matrix as scratch_confusion_matrix,
 )
-from ml_from_scratch.neighbors.knn_classifier import (
-    KNeighborsClassifierScratch,
+from ml_from_scratch.trees.decision_tree_classifier import (
+    DecisionTreeClassifierScratch,
 )
 
 
@@ -37,32 +36,33 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y,
 )
 
-scaler = StandardScaler()
-
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-scratch_model = KNeighborsClassifierScratch(
-    n_neighbors=5,
+scratch_model = DecisionTreeClassifierScratch(
+    max_depth=3,
+    min_samples_split=2,
+    min_samples_leaf=1,
 )
 
-sklearn_model = KNeighborsClassifier(
-    n_neighbors=5,
+sklearn_model = DecisionTreeClassifier(
+    max_depth=3,
+    min_samples_split=2,
+    min_samples_leaf=1,
+    criterion="gini",
+    random_state=7,
 )
 
-scratch_model.fit(X_train_scaled, y_train)
-sklearn_model.fit(X_train_scaled, y_train)
+scratch_model.fit(X_train, y_train)
+sklearn_model.fit(X_train, y_train)
 
-y_pred_scratch = scratch_model.predict(X_test_scaled)
-y_pred_sklearn = sklearn_model.predict(X_test_scaled)
+y_pred_scratch = scratch_model.predict(X_test)
+y_pred_sklearn = sklearn_model.predict(X_test)
 
-scratch_model_name = "Scratch KNN Classifier"
-sklearn_model_name = "Scikit-Learn KNN Classifier"
+scratch_model_name = "Scratch Decision Tree"
+sklearn_model_name = "Scikit-Learn Decision Tree"
 
 print_experiment_header(
-    "KNN Classifier — Iris Dataset",
-    X_train_scaled,
-    X_test_scaled,
+    "Decision Tree Classifier — Iris Dataset",
+    X_train,
+    X_test,
     y_train,
     y_test,
 )
@@ -111,3 +111,10 @@ print_classification_prediction_comparison(
     y_pred_scratch,
     y_pred_sklearn,
 )
+
+print_section_header("Root Split Comparison")
+
+print("Scratch root feature:", scratch_model.root.feature_index)
+print("Scratch root threshold:", scratch_model.root.threshold)
+print("Scikit-learn root feature:", sklearn_model.tree_.feature[0])
+print("Scikit-learn root threshold:", sklearn_model.tree_.threshold[0])
